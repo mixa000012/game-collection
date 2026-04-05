@@ -1,7 +1,7 @@
 import type { GameStatus } from "../types"
 import styles from "./SearchBar.module.css"
 
-interface SearchBarProps {
+interface Props {
   searchQuery: string
   statusFilter: GameStatus | ""
   onSearchChange: (value: string) => void
@@ -13,7 +13,7 @@ export function SearchBar({
   statusFilter,
   onSearchChange,
   onStatusChange,
-}: SearchBarProps) {
+}: Props) {
   return (
     <div className={styles.bar}>
       <input

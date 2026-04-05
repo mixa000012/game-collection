@@ -2,13 +2,13 @@ import type { Game } from "../types"
 import { GameCard } from "./GameCard"
 import styles from "./GameList.module.css"
 
-interface GameListProps {
+interface Props {
   games: Game[]
   onEdit: (game: Game) => void
   onDelete: (id: string) => void
 }
 
-export function GameList({ games, onEdit, onDelete }: GameListProps) {
+export function GameList({ games, onEdit, onDelete }: Props) {
   if (games.length === 0) {
     return <p className={styles.empty}>Список пуст. Добавьте первую игру!</p>
   }

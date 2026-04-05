@@ -2,98 +2,86 @@ import { useState, useEffect } from "react"
 import type { Game, GameStatus } from "../types"
 import styles from "./GameForm.module.css"
 
-interface GameFormProps {
+interface Props {
   editingGame: Game | null
-  onSubmit: (data: Omit<Game, "id">) => void
-  onUpdate: (id: string, data: Partial<Game>) => void
+  onSubmit: (game: Game) => void
+  onUpdate: (id: string, game: Game) => void
   onCancel: () => void
 }
 
-const EMPTY_FORM = {
-  title: "",
-  genre: "",
-  platform: "",
-  rating: "",
-  status: "backlog" as GameStatus,
-}
-
-export function GameForm({
-  editingGame,
-  onSubmit,
-  onUpdate,
-  onCancel,
-}: GameFormProps) {
-  const [formData, setFormData] = useState(EMPTY_FORM)
+export function GameForm({ editingGame, onSubmit, onUpdate, onCancel }: Props) {
+  const [title, setTitle] = useState("")
+  const [genre, setGenre] = useState("")
+  const [platform, setPlatform] = useState("")
+  const [rating, setRating] = useState("")
+  const [status, setStatus] = useState<GameStatus>("backlog")
 
   useEffect(() => {
     if (editingGame) {
-      setFormData({
-        title: editingGame.title,
-        genre: editingGame.genre,
-        platform: editingGame.platform,
-        rating: String(editingGame.rating),
-        status: editingGame.status,
-      })
+      setTitle(editingGame.title)
+      setGenre(editingGame.genre)
+      setPlatform(editingGame.platform)
+      setRating(String(editingGame.rating))
+      setStatus(editingGame.status)
     } else {
-      setFormData(EMPTY_FORM)
+      setTitle("")
+      setGenre("")
+      setPlatform("")
+      setRating("")
+      setStatus("backlog")
     }
   }, [editingGame])
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!formData.title.trim()) return
+    if (!title.trim()) return
 
-    const gameData = {
-      title: formData.title.trim(),
-      genre: formData.genre.trim(),
-      platform: formData.platform.trim(),
-      rating: Number(formData.rating) || 0,
-      status: formData.status,
+    const game = {
+      id: "",
+      title: title.trim(),
+      genre: genre.trim(),
+      platform: platform.trim(),
+      rating: Number(rating) || 0,
+      status,
     }
 
     if (editingGame) {
-      onUpdate(editingGame.id, gameData)
+      onUpdate(editingGame.id, game)
     } else {
-      onSubmit(gameData)
+      onSubmit(game)
     }
 
-    setFormData(EMPTY_FORM)
+    setTitle("")
+    setGenre("")
+    setPlatform("")
+    setRating("")
+    setStatus("backlog")
   }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <input
         className={styles.inputWide}
-        name="title"
-        value={formData.title}
-        onChange={handleChange}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         placeholder="Название"
       />
       <input
         className={styles.input}
-        name="genre"
-        value={formData.genre}
-        onChange={handleChange}
+        value={genre}
+        onChange={(e) => setGenre(e.target.value)}
         placeholder="Жанр"
       />
       <input
         className={styles.input}
-        name="platform"
-        value={formData.platform}
-        onChange={handleChange}
+        value={platform}
+        onChange={(e) => setPlatform(e.target.value)}
         placeholder="Платформа"
       />
       <select
         className={styles.input}
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
+        value={status}
+        onChange={(e) => setStatus(e.target.value as GameStatus)}
       >
         <option value="backlog">Хочу поиграть</option>
         <option value="playing">Прохожу</option>
@@ -101,12 +89,11 @@ export function GameForm({
       </select>
       <input
         className={styles.input}
-        name="rating"
         type="number"
         min="1"
         max="10"
-        value={formData.rating}
-        onChange={handleChange}
+        value={rating}
+        onChange={(e) => setRating(e.target.value)}
         placeholder="Оценка (1-10)"
       />
       <div className={styles.buttons}>

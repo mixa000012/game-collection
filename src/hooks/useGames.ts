@@ -4,19 +4,16 @@ import type { Game } from "../types"
 export function useGames() {
   const [games, setGames] = useState<Game[]>([])
 
-  const addGame = (data: Omit<Game, "id">) => {
-    const newGame: Game = { ...data, id: crypto.randomUUID() }
-    setGames((prev) => [...prev, newGame])
+  function addGame(game: Game) {
+    setGames([...games, { ...game, id: String(Date.now()) }])
   }
 
-  const updateGame = (id: string, data: Partial<Game>) => {
-    setGames((prev) =>
-      prev.map((game) => (game.id === id ? { ...game, ...data } : game))
-    )
+  function updateGame(id: string, updated: Game) {
+    setGames(games.map((g) => (g.id === id ? updated : g)))
   }
 
-  const deleteGame = (id: string) => {
-    setGames((prev) => prev.filter((game) => game.id !== id))
+  function deleteGame(id: string) {
+    setGames(games.filter((g) => g.id !== id))
   }
 
   return { games, addGame, updateGame, deleteGame }

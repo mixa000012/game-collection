@@ -1,19 +1,19 @@
 import type { Game } from "../types"
 import styles from "./GameCard.module.css"
 
-interface GameCardProps {
-  game: Game
-  onEdit: (game: Game) => void
-  onDelete: (id: string) => void
-}
-
-const STATUS_LABELS: Record<Game["status"], string> = {
+const statusLabels = {
   backlog: "Хочу поиграть",
   playing: "Прохожу",
   completed: "Пройдена",
 }
 
-export function GameCard({ game, onEdit, onDelete }: GameCardProps) {
+interface Props {
+  game: Game
+  onEdit: (game: Game) => void
+  onDelete: (id: string) => void
+}
+
+export function GameCard({ game, onEdit, onDelete }: Props) {
   return (
     <div className={styles.card}>
       <div className={styles.info}>
@@ -24,7 +24,7 @@ export function GameCard({ game, onEdit, onDelete }: GameCardProps) {
       </div>
       <div className={styles.actions}>
         <span className={`${styles.badge} ${styles[game.status]}`}>
-          {STATUS_LABELS[game.status]}
+          {statusLabels[game.status]}
         </span>
         <button className={styles.editBtn} onClick={() => onEdit(game)}>
           ✎
