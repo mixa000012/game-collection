@@ -1,7 +1,13 @@
 import { useGames } from "./hooks/useGames"
+import { GameList } from "./components/GameList"
+import type { Game } from "./types"
 
 function App() {
   const { games, addGame, deleteGame } = useGames()
+
+  const handleEdit = (game: Game) => {
+    console.log("edit", game)
+  }
 
   return (
     <div>
@@ -19,13 +25,7 @@ function App() {
       >
         Add test game
       </button>
-      <p>Games count: {games.length}</p>
-      {games.map((game) => (
-        <div key={game.id}>
-          {game.title}{" "}
-          <button onClick={() => deleteGame(game.id)}>delete</button>
-        </div>
-      ))}
+      <GameList games={games} onEdit={handleEdit} onDelete={deleteGame} />
     </div>
   )
 }
